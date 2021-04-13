@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 from torchvision import transforms
 
-from utils.labels import labels
+from cityscapes.data_conf import labels
 
 def convert_rgb(pred):
     
@@ -19,13 +19,12 @@ def convert_rgb(pred):
 
 
 
-def save_image(save_path, name, real, gt, pred, num_class):
+def save_image(name, real, gt, pred):
     real, gt, pred = real[0].cpu(), gt[0].cpu(), pred[0].cpu()
 
     real = transforms.ToPILImage()(real)
     gt = np.uint8(gt.detach().numpy())
     pred = np.uint8(torch.argmax(pred, dim=0).detach().numpy())
-#    pred = Image.fromarray(pred*int(255/num_class))
 
     gt_rgb = convert_rgb(gt)
     pred_rgb = convert_rgb(pred)
@@ -43,7 +42,7 @@ def save_image(save_path, name, real, gt, pred, num_class):
         new_img.paste(img, (offset, 0))
         offset += img.size[0]
 
-    new_img.save(save_path+name)
+    new_img.save(name)
         
 
 
