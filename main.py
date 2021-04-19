@@ -20,7 +20,7 @@ def parse_args():
             help="Number of classes")
     parser.add_argument("--data_path", type=str, default="/home/jhson/mystudy/segmentation/dataset/CITYSCAPES",
             help="path to training dataset <Cityscapes>")
-    parser.add_argument("--save_path", type=str, default="/data/segment/city/1/",
+    parser.add_argument("--save_path", type=str, default="/data/segment/city/2/",
             help="path to save results (Weights, Images and logs)")
     parser.add_argument("--img_size", type=list, nargs='+', default=[300,580],
             help="Resize images for training to [img_size]")

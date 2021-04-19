@@ -7,6 +7,7 @@ from torchvision import models
 from cityscapes.dataloader import get_dataloader_train 
 from cityscapes.data_conf import labels
 from utils.image import save_image
+from utils.metrics import get_mIoU
 
 def get_custom_DeepLabv3(out_channels, pretrained):
 
@@ -76,6 +77,7 @@ class Deeplab():
             #####
             ### Validation
             avg_loss = 0.0
+            avg_mIoU = 0.0
             self.model.eval()
             with torch.no_grad():
                 for idx, (img, gt) in enumerate(self.dataloader_val):
@@ -83,10 +85,11 @@ class Deeplab():
                     pred = self.model(img)["out"]
                     loss = crit_ce(pred, gt)
                     avg_loss = avg_loss + loss.item()
+                    avg_mIoU = avg_mIoU + get_mIoU(gt, pred)
 
                 ### Logging
-                logger.log("[EVAL] [[%4d/%4d] loss CE(%.3f)" 
-                        % (epoch, args.num_epoch, avg_loss/len(self.dataloader_val)))
+                logger.log("[EVAL] [[%4d/%4d] loss CE(%.3f) mIoU(%.3f)" 
+                        % (epoch, args.num_epoch, avg_loss/len(self.dataloader_val),  avg_mIoU/len(self.dataloader_val)))
                 img_name = args.save_path + "/eval-%d.jpg"%(epoch)
                 save_image(img_name, img, gt, pred)
 
